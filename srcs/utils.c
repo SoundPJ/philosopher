@@ -1,38 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.h                                            :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pjerddee <pjerddee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/19 18:57:12 by pjerddee          #+#    #+#             */
-/*   Updated: 2023/02/04 18:45:25 by pjerddee         ###   ########.fr       */
+/*   Created: 2022/12/24 12:37:58 by pjerddee          #+#    #+#             */
+/*   Updated: 2023/02/04 18:47:29 by pjerddee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_H
-# define PHILO_H
+#include "philo.h"
 
-# include <unistd.h>
-# include <string.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <sys/time.h>
-# include <pthread.h>
-
-typedef struct timeval t_tv;
-typedef struct timezone t_tz;
-
-typedef struct s_philo
+int	ft_atoi(char *nptr)
 {
-	int	nphi;
-	int tdie;
-	int teat;
-	int tsleep;
-	int nteat;
-}	t_philo;
+	int	val;
+	int	i;
 
-//utils.c
-int	ft_atoi(char *nptr);
-int	ft_err(char *str);
-#endif
+	val = 0;
+	i = 0;
+	if (nptr[i] < '0' || nptr[i] > '9')
+		return (-1);
+	while (nptr[i] >= '0' && nptr[i] <= '9')
+		val = (val * 10) + (nptr[i++] - '0');
+	return (val);
+}
+
+int	ft_err(char *str)
+{
+	printf("%s", str);
+	exit(0);
+}
