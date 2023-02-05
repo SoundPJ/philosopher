@@ -6,7 +6,7 @@
 /*   By: pjerddee <pjerddee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/24 12:37:58 by pjerddee          #+#    #+#             */
-/*   Updated: 2023/02/04 18:47:29 by pjerddee         ###   ########.fr       */
+/*   Updated: 2023/02/05 16:16:54 by pjerddee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,4 +30,35 @@ int	ft_err(char *str)
 {
 	printf("%s", str);
 	exit(0);
+}
+
+void	ft_lstadd_back(t_philo **lst, t_philo *new)
+{
+	t_philo *ptr;
+
+	if (*lst == NULL)
+	{
+		*lst = new;
+	}
+	else
+	{
+		ptr = *lst;
+		while (ptr->next != NULL)
+			ptr = ptr->next;
+		ptr->next = new;
+	}
+}
+
+t_philo	*ft_philonew(t_data *data, int name)
+{
+	t_philo	*node;
+
+	node = (t_philo *)malloc(sizeof(t_philo));
+	if (!node)
+		return (NULL);
+	node->name = name;
+	node->nate = 0;
+	node->data = data;
+	node->next = NULL;
+	return (node);
 }
