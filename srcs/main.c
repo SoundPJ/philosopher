@@ -6,7 +6,7 @@
 /*   By: pjerddee <pjerddee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/19 18:56:35 by pjerddee          #+#    #+#             */
-/*   Updated: 2023/02/05 16:22:34 by pjerddee         ###   ########.fr       */
+/*   Updated: 2023/02/05 18:32:24 by pjerddee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ void	*philo_actions(void *philo)
 	while (i--)
 	{
 		printf("%d is eating\n", tmp->name);
+		usleep(500);
 		tmp->nate++;
 	}
 	return (NULL);
@@ -65,9 +66,10 @@ int	get_argv(int ac, char **av, t_data *data)
 int	main(int ac, char **av)
 {
 	t_data		data;
-	t_philo		*ptr;
+	// t_philo		*ptr;
+	t_tv		tv;
 	int			res;
-	int			i;
+	// int			i;
 	
 	res = get_argv(ac, av, &data);
 	if (res == -1)
@@ -76,26 +78,30 @@ int	main(int ac, char **av)
 		ft_err("All input should be positive integer\n");
 	else
 	{
-		i = 0;
-		while (i < data.nphi)
-		{
-			t_philo	*new;
-			new = ft_philonew(&data, i);
-			ft_lstadd_back(data.philo_lst, new);
-			i++;
-		}
-		ptr = *(data.philo_lst);
-		while (ptr)
-		{
-			pthread_create(&(ptr->thrd), NULL, &philo_actions, ptr);
-			ptr = ptr->next;
-		}
-		ptr = *(data.philo_lst);
-		while (ptr != NULL)
-		{
-			pthread_join(ptr->thrd, NULL);
-			ptr = ptr->next;
-		}
+		gettimeofday(&tv, NULL);
+		printf("%ld\t%ld\n", tv.tv_sec, tv.tv_usec);
+		printf("hour = %ld\n", tv.tv_sec/(3600*24*365));
+		// i = 0;
+		// while (i < data.nphi)
+		// {
+		// 	t_philo	*new;
+		// 	new = ft_philonew(&data, i);
+		// 	ft_lstadd_back(data.philo_lst, new);
+		// 	i++;
+		// }
+		// ptr = *(data.philo_lst);
+		// while (ptr)
+		// {
+		// 	// if ()
+		// 		pthread_create(&(ptr->thrd), NULL, &philo_actions, ptr);
+		// 	ptr = ptr->next;
+		// }
+		// ptr = *(data.philo_lst);
+		// while (ptr != NULL)
+		// {
+		// 	pthread_join(ptr->thrd, NULL);
+		// 	ptr = ptr->next;
+		// }
 	}
 	return (0);
 }
