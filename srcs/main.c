@@ -6,7 +6,7 @@
 /*   By: pjerddee <pjerddee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/19 18:56:35 by pjerddee          #+#    #+#             */
-/*   Updated: 2023/02/05 18:32:24 by pjerddee         ###   ########.fr       */
+/*   Updated: 2023/02/08 01:45:19 by pjerddee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	test_print(t_data *data)
 	printf("neat: %d\n", data->neat);
 }
 
-void	*philo_actions(void *philo)
+void	*philo_activities(void *philo)
 {
 	t_philo *tmp;
 	tmp = (t_philo *)philo;
@@ -44,7 +44,7 @@ void	*philo_actions(void *philo)
 int	get_argv(int ac, char **av, t_data *data)
 {
 	if (ac < 5 || ac > 6)
-		return (-1);	
+		return (-1);
 	data->nphi = ft_atoi(av[1]);
 	data->tdie = ft_atoi(av[2]);
 	data->teat = ft_atoi(av[3]);
@@ -63,14 +63,30 @@ int	get_argv(int ac, char **av, t_data *data)
 	return (0);
 }
 
+void sleep_ms(int tsleep_ms)
+{
+	t_tv			ta;
+	t_tv			tb;
+	long	tdiff;
+
+	gettimeofday(&ta, NULL);
+	tdiff = 0;
+	while (tdiff < tsleep_ms)
+	{
+		gettimeofday(&tb, NULL);
+		tdiff = ((tb.tv_sec - ta.tv_sec) * 1000) + ((tb.tv_usec - ta.tv_usec) / 1000);
+	}
+}
+
 int	main(int ac, char **av)
 {
 	t_data		data;
 	// t_philo		*ptr;
-	t_tv		tv;
+	t_tv		tstart;
+	t_tv		tnow;
 	int			res;
 	// int			i;
-	
+
 	res = get_argv(ac, av, &data);
 	if (res == -1)
 		ft_err("Invalid input\n");
@@ -78,9 +94,17 @@ int	main(int ac, char **av)
 		ft_err("All input should be positive integer\n");
 	else
 	{
-		gettimeofday(&tv, NULL);
-		printf("%ld\t%ld\n", tv.tv_sec, tv.tv_usec);
-		printf("hour = %ld\n", tv.tv_sec/(3600*24*365));
+		long diff_ms;
+		for(int i = 0; i < 10; i++)
+		{
+			gettimeofday(&tstart, NULL);
+			sleep_ms(100);
+			gettimeofday(&tnow, NULL);
+			diff_ms = (tnow.tv_usec/1000) + (tnow.tv_sec*1000) - (tstart.tv_usec/1000) - (tstart.tv_sec*1000);
+			printf("diff t: %ld\n", diff_ms);
+		}
+
+
 		// i = 0;
 		// while (i < data.nphi)
 		// {
