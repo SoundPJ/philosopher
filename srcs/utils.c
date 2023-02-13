@@ -62,3 +62,30 @@ t_philo	*ft_philonew(t_data *data, int name)
 	node->next = NULL;
 	return (node);
 }
+
+long	get_timestamp(t_data *data)
+{
+	t_tv	ta;
+	t_tv	tb;
+	long	tstamp;
+
+	ta = data->tstart;
+	gettimeofday(&tb, NULL);
+	tstamp = ((tb.tv_sec - ta.tv_sec) * 1000) + ((tb.tv_usec - ta.tv_usec) / 1000);
+	return (tstamp);
+}
+
+void sleep_ms(int tsleep_ms)
+{
+	t_tv			ta;
+	t_tv			tb;
+	long	tdiff;
+
+	gettimeofday(&ta, NULL);
+	tdiff = 0;
+	while (tdiff < tsleep_ms)
+	{
+		gettimeofday(&tb, NULL);
+		tdiff = ((tb.tv_sec - ta.tv_sec) * 1000) + ((tb.tv_usec - ta.tv_usec) / 1000);
+	}
+}

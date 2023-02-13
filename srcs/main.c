@@ -12,7 +12,6 @@
 
 #include "philo.h"
 //number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]
-// void	*test_print()
 void	test_print(t_data *data)
 {
 	printf("nphi: %d\n", data->nphi);
@@ -27,16 +26,12 @@ void	*philo_activities(void *philo)
 	t_philo *tmp;
 	tmp = (t_philo *)philo;
 
-	// if (philo_take_fork(data))
-	// 	philo_eat(data);
-	// philo_sleep(data);
-	// philo_think(data);
-	int i = 10;
-	while (i--)
-	{
-		printf("%d is eating\n", tmp->name);
-		usleep(500);
-		tmp->nate++;
+	while(tmp->data->stop != 1)
+	{  
+		if (philo_take_fork(tmp))
+			philo_eat(tmp);
+		philo_sleep(tmp);
+		philo_think(tmp);
 	}
 	return (NULL);
 }
@@ -49,6 +44,7 @@ int	get_argv(int ac, char **av, t_data *data)
 	data->tdie = ft_atoi(av[2]);
 	data->teat = ft_atoi(av[3]);
 	data->tsleep = ft_atoi(av[4]);
+	data->stop = 0;
 	if (ac == 6)
 	{
 		data->neat = ft_atoi(av[5]);
@@ -63,29 +59,25 @@ int	get_argv(int ac, char **av, t_data *data)
 	return (0);
 }
 
-void sleep_ms(int tsleep_ms)
+void	philo_create(t_data *data)
 {
-	t_tv			ta;
-	t_tv			tb;
-	long	tdiff;
+	int		i;
+	t_philo	*new;
 
-	gettimeofday(&ta, NULL);
-	tdiff = 0;
-	while (tdiff < tsleep_ms)
+	i = 0;
+	while (i < data->nphi)
 	{
-		gettimeofday(&tb, NULL);
-		tdiff = ((tb.tv_sec - ta.tv_sec) * 1000) + ((tb.tv_usec - ta.tv_usec) / 1000);
+		new = ft_philonew(data, i);
+		ft_lstadd_back(data->philo_lst, new);
+		i++;
 	}
 }
 
 int	main(int ac, char **av)
 {
 	t_data		data;
-	// t_philo		*ptr;
-	t_tv		tstart;
-	t_tv		tnow;
+	t_philo		*ptr;
 	int			res;
-	// int			i;
 
 	res = get_argv(ac, av, &data);
 	if (res == -1)
@@ -94,38 +86,20 @@ int	main(int ac, char **av)
 		ft_err("All input should be positive integer\n");
 	else
 	{
-		long diff_ms;
-		for(int i = 0; i < 10; i++)
+		philo_create(&data);
+		ptr = *(data.philo_lst);
+		gettimeofday(&(data.tstart), NULL);	
+		while (ptr)
 		{
-			gettimeofday(&tstart, NULL);
-			sleep_ms(100);
-			gettimeofday(&tnow, NULL);
-			diff_ms = (tnow.tv_usec/1000) + (tnow.tv_sec*1000) - (tstart.tv_usec/1000) - (tstart.tv_sec*1000);
-			printf("diff t: %ld\n", diff_ms);
+			pthread_create(&(ptr->thrd), NULL, &philo_activities, ptr);
+			ptr = ptr->next;
 		}
-
-
-		// i = 0;
-		// while (i < data.nphi)
-		// {
-		// 	t_philo	*new;
-		// 	new = ft_philonew(&data, i);
-		// 	ft_lstadd_back(data.philo_lst, new);
-		// 	i++;
-		// }
-		// ptr = *(data.philo_lst);
-		// while (ptr)
-		// {
-		// 	// if ()
-		// 		pthread_create(&(ptr->thrd), NULL, &philo_actions, ptr);
-		// 	ptr = ptr->next;
-		// }
-		// ptr = *(data.philo_lst);
-		// while (ptr != NULL)
-		// {
-		// 	pthread_join(ptr->thrd, NULL);
-		// 	ptr = ptr->next;
-		// }
+		ptr = *(data.philo_lst);
+		while (ptr != NULL)
+		{
+			pthread_join(ptr->thrd, NULL);
+			ptr = ptr->next;
+		}
 	}
 	return (0);
 }

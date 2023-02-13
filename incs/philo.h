@@ -12,13 +12,14 @@
 
 #ifndef PHILO_H
 # define PHILO_H
+#endif
 
-# include <unistd.h>
-# include <string.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <sys/time.h>
-# include <pthread.h>
+#include <unistd.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/time.h>
+#include <pthread.h>
 
 typedef struct	timeval		t_tv;
 typedef struct	timezone	t_tz;
@@ -36,11 +37,13 @@ typedef struct s_philo
 
 typedef struct s_data
 {
-	int	nphi;
-	int tdie;
-	int teat;
-	int tsleep;
-	int neat;
+	int		nphi;
+	int 	tdie;
+	int 	teat;
+	int 	tsleep;
+	int 	neat;
+	int		stop;
+	t_tv	tstart;
 	t_philo	**philo_lst;
 }	t_data;
 
@@ -49,5 +52,12 @@ int		ft_atoi(char *nptr);
 int		ft_err(char *str);
 void	ft_lstadd_back(t_philo **lst, t_philo *new);
 t_philo	*ft_philonew(t_data *data, int name);
+long	get_timestamp(t_data *data);
+void	sleep_ms(int tsleep_ms);
 
-#endif
+//activities.c
+int		philo_take_fork(t_philo *philo);
+void	philo_put_fork(t_philo *philo);
+void	philo_eat(t_philo *philo);
+void	philo_sleep(t_philo *philo);
+void	philo_think(t_philo *philo);

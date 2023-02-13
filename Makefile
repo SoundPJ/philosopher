@@ -15,13 +15,14 @@ NAME = philo
 BNAME = philo_bonus
 
 SRCS =	srcs/main.c	\
-		srcs/utils.c
+		srcs/utils.c \
+		srcs/activities.c
 
 # BNS =	src/checker.c	\
 
 INCS =	incs/philo.h
 
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -pthread
 
 INC_DIR =	incs/
 
