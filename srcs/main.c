@@ -6,7 +6,7 @@
 /*   By: pjerddee <pjerddee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/19 18:56:35 by pjerddee          #+#    #+#             */
-/*   Updated: 2023/02/08 01:45:19 by pjerddee         ###   ########.fr       */
+/*   Updated: 2023/02/18 00:34:45 by pjerddee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,13 @@ void	*philo_activities(void *philo)
 	t_philo *tmp;
 	tmp = (t_philo *)philo;
 
-	// while(tmp->data->stop != 1)
-	// {  
+	while(tmp->data->stop != 1)
+	{
 		if (philo_take_fork(tmp) == 1 )
 			philo_eat(tmp);
 		philo_sleep(tmp);
 		philo_think(tmp);
-	// }
+	}
 	return (NULL);
 }
 
@@ -76,6 +76,7 @@ int	main(int ac, char **av)
 	t_data		data;
 	t_philo		*ptr;
 	int			res;
+	int			i;
 
 	res = get_argv(ac, av, &data);
 	if (res == -1)
@@ -84,16 +85,18 @@ int	main(int ac, char **av)
 		ft_err("All input should be positive integer\n");
 	else
 	{
-		philo_create(&data);		
-		ptr = *(data.philo_lst);		
-		gettimeofday(&(data.tstart), NULL);	
-		while (ptr)
+		philo_create(&data);
+		ptr = *(data.philo_lst);
+		i = data.nphi;
+		gettimeofday(&(data.tstart), NULL);
+		while (i--)
 		{
 			pthread_create(&(ptr->thrd), NULL, &philo_activities, ptr);
 			ptr = ptr->next;
 		}
+		i = data.nphi;
 		ptr = *(data.philo_lst);
-		while (ptr != NULL)
+		while (i--)
 		{
 			pthread_join(ptr->thrd, NULL);
 			ptr = ptr->next;
