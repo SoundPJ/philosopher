@@ -6,7 +6,7 @@
 /*   By: pjerddee <pjerddee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/24 12:37:58 by pjerddee          #+#    #+#             */
-/*   Updated: 2023/02/05 16:16:54 by pjerddee         ###   ########.fr       */
+/*   Updated: 2023/02/18 02:20:56 by pjerddee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,17 @@ int	ft_atoi(char *nptr)
 	return (val);
 }
 
-int	ft_err(char *str)
+int	ft_err(char *str, t_data *data)
 {
+	(void)	data;
 	printf("%s", str);
+	//free philolst
 	exit(0);
 }
 
 void	ft_lstadd_back(t_philo **lst, t_philo *new)
 {
-	t_philo *ptr;
+	t_philo	*ptr;
 
 	if (*lst == NULL)
 		*lst = new;
@@ -44,7 +46,7 @@ void	ft_lstadd_back(t_philo **lst, t_philo *new)
 		while (ptr->next != NULL)
 			ptr = ptr->next;
 		ptr->next = new;
-		ptr->next->prev	= ptr;
+		ptr->next->prev = ptr;
 	}
 }
 
@@ -61,32 +63,4 @@ t_philo	*ft_philonew(t_data *data, int name)
 	node->next = NULL;
 	pthread_mutex_init(&(node->fork), NULL);
 	return (node);
-}
-
-long	get_timestamp(t_data *data)
-{
-	t_tv	ta;
-	t_tv	tb;
-	long	tstamp;
-
-	ta = data->tstart;
-	gettimeofday(&tb, NULL);
-	tstamp = ((tb.tv_sec - ta.tv_sec) * 1000) + ((tb.tv_usec - ta.tv_usec) / 1000);
-	// printf("tstamp = %ld\n", tstamp);
-	return (tstamp);
-}
-
-void sleep_ms(int tsleep_ms)
-{
-	t_tv			ta;
-	t_tv			tb;
-	long	tdiff;
-
-	gettimeofday(&ta, NULL);
-	tdiff = 0;
-	while (tdiff < tsleep_ms)
-	{
-		gettimeofday(&tb, NULL);
-		tdiff = ((tb.tv_sec - ta.tv_sec) * 1000) + ((tb.tv_usec - ta.tv_usec) / 1000);
-	}
 }

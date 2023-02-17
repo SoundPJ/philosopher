@@ -6,7 +6,7 @@
 #    By: pjerddee <pjerddee@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/19 18:49:46 by pjerddee          #+#    #+#              #
-#    Updated: 2022/12/24 12:42:22 by pjerddee         ###   ########.fr        #
+#    Updated: 2023/02/18 02:12:04 by pjerddee         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,8 @@ BNAME = philo_bonus
 
 SRCS =	srcs/main.c	\
 		srcs/utils.c \
-		srcs/activities.c
+		srcs/activities.c \
+		srcs/time.c
 
 # BNS =	src/checker.c	\
 

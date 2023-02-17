@@ -6,21 +6,21 @@
 /*   By: pjerddee <pjerddee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/19 18:56:35 by pjerddee          #+#    #+#             */
-/*   Updated: 2023/02/18 00:34:45 by pjerddee         ###   ########.fr       */
+/*   Updated: 2023/02/18 02:19:04 by pjerddee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-//number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]
+//n_of_philosophers t_to_die t_to_eat t_to_sleep [ntimes_must_eat]
 
 void	*philo_activities(void *philo)
 {
-	t_philo *tmp;
-	tmp = (t_philo *)philo;
+	t_philo	*tmp;
 
-	while(tmp->data->stop != 1)
+	tmp = (t_philo *)philo;
+	while (tmp->data->stop != 1)
 	{
-		if (philo_take_fork(tmp) == 1 )
+		if (philo_take_fork(tmp) == 1)
 			philo_eat(tmp);
 		philo_sleep(tmp);
 		philo_think(tmp);
@@ -52,11 +52,26 @@ int	get_argv(int ac, char **av, t_data *data)
 	return (0);
 }
 
+void	start_thread(t_data *data)
+{
+	int		i;
+	t_philo	*ptr;
+
+	ptr = *(data->philo_lst);
+	i = data->nphi;
+	gettimeofday(&(data->tstart), NULL);
+	while (i--)
+	{
+		pthread_create(&(ptr->thrd), NULL, &philo_activities, ptr);
+		ptr = ptr->next;
+	}
+}
+
 void	philo_create(t_data *data)
 {
 	int		i;
-	t_philo	*new;
 	t_philo	*ptr;
+	t_philo	*new;
 
 	i = 0;
 	while (i < data->nphi)
@@ -65,18 +80,31 @@ void	philo_create(t_data *data)
 		ft_lstadd_back(data->philo_lst, new);
 		i++;
 	}
+	start_thread(data);
 	ptr = *(data->philo_lst);
 	while (ptr->next != NULL)
 		ptr = ptr->next;
 	ptr->next = *(data->philo_lst);
 }
 
+void	philo_join(t_data *data)
+{
+	int		i;
+	t_philo	*ptr;
+
+	i = data->nphi;
+	ptr = *(data->philo_lst);
+	while (i--)
+	{
+		pthread_join(ptr->thrd, NULL);
+		ptr = ptr->next;
+	}
+}
+
 int	main(int ac, char **av)
 {
 	t_data		data;
-	t_philo		*ptr;
 	int			res;
-	int			i;
 
 	res = get_argv(ac, av, &data);
 	if (res == -1)
@@ -86,21 +114,7 @@ int	main(int ac, char **av)
 	else
 	{
 		philo_create(&data);
-		ptr = *(data.philo_lst);
-		i = data.nphi;
-		gettimeofday(&(data.tstart), NULL);
-		while (i--)
-		{
-			pthread_create(&(ptr->thrd), NULL, &philo_activities, ptr);
-			ptr = ptr->next;
-		}
-		i = data.nphi;
-		ptr = *(data.philo_lst);
-		while (i--)
-		{
-			pthread_join(ptr->thrd, NULL);
-			ptr = ptr->next;
-		}
+		philo_join(&data);
 	}
 	return (0);
 }
