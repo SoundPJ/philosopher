@@ -12,27 +12,19 @@
 
 #include "philo.h"
 //number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]
-void	test_print(t_data *data)
-{
-	printf("nphi: %d\n", data->nphi);
-	printf("tdie: %d\n", data->tdie);
-	printf("teat: %d\n", data->teat);
-	printf("tsleep: %d\n", data->tsleep);
-	printf("neat: %d\n", data->neat);
-}
 
 void	*philo_activities(void *philo)
 {
 	t_philo *tmp;
 	tmp = (t_philo *)philo;
 
-	while(tmp->data->stop != 1)
-	{  
-		if (philo_take_fork(tmp))
+	// while(tmp->data->stop != 1)
+	// {  
+		if (philo_take_fork(tmp) == 1 )
 			philo_eat(tmp);
 		philo_sleep(tmp);
 		philo_think(tmp);
-	}
+	// }
 	return (NULL);
 }
 
@@ -45,6 +37,7 @@ int	get_argv(int ac, char **av, t_data *data)
 	data->teat = ft_atoi(av[3]);
 	data->tsleep = ft_atoi(av[4]);
 	data->stop = 0;
+	pthread_mutex_init(&(data->printq), NULL);
 	if (ac == 6)
 	{
 		data->neat = ft_atoi(av[5]);
@@ -63,6 +56,7 @@ void	philo_create(t_data *data)
 {
 	int		i;
 	t_philo	*new;
+	t_philo	*ptr;
 
 	i = 0;
 	while (i < data->nphi)
@@ -71,6 +65,10 @@ void	philo_create(t_data *data)
 		ft_lstadd_back(data->philo_lst, new);
 		i++;
 	}
+	ptr = *(data->philo_lst);
+	while (ptr->next != NULL)
+		ptr = ptr->next;
+	ptr->next = *(data->philo_lst);
 }
 
 int	main(int ac, char **av)
@@ -86,8 +84,8 @@ int	main(int ac, char **av)
 		ft_err("All input should be positive integer\n");
 	else
 	{
-		philo_create(&data);
-		ptr = *(data.philo_lst);
+		philo_create(&data);		
+		ptr = *(data.philo_lst);		
 		gettimeofday(&(data.tstart), NULL);	
 		while (ptr)
 		{

@@ -37,15 +37,14 @@ void	ft_lstadd_back(t_philo **lst, t_philo *new)
 	t_philo *ptr;
 
 	if (*lst == NULL)
-	{
 		*lst = new;
-	}
 	else
 	{
 		ptr = *lst;
 		while (ptr->next != NULL)
 			ptr = ptr->next;
 		ptr->next = new;
+		ptr->next->prev	= ptr;
 	}
 }
 
@@ -60,6 +59,7 @@ t_philo	*ft_philonew(t_data *data, int name)
 	node->nate = 0;
 	node->data = data;
 	node->next = NULL;
+	pthread_mutex_init(&(node->fork), NULL);
 	return (node);
 }
 
@@ -72,6 +72,7 @@ long	get_timestamp(t_data *data)
 	ta = data->tstart;
 	gettimeofday(&tb, NULL);
 	tstamp = ((tb.tv_sec - ta.tv_sec) * 1000) + ((tb.tv_usec - ta.tv_usec) / 1000);
+	// printf("tstamp = %ld\n", tstamp);
 	return (tstamp);
 }
 

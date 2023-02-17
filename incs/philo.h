@@ -29,10 +29,13 @@ typedef struct s_philo
 {
 	int				name;
 	int				nate;
+	long			tseat;
+	long			tssleep;
 	pthread_t		thrd;
 	pthread_mutex_t	fork;
 	struct s_data	*data;
 	struct s_philo	*next;
+	struct s_philo	*prev;	
 }	t_philo;
 
 typedef struct s_data
@@ -44,6 +47,7 @@ typedef struct s_data
 	int 	neat;
 	int		stop;
 	t_tv	tstart;
+	pthread_mutex_t	printq;
 	t_philo	**philo_lst;
 }	t_data;
 
@@ -51,9 +55,9 @@ typedef struct s_data
 int		ft_atoi(char *nptr);
 int		ft_err(char *str);
 void	ft_lstadd_back(t_philo **lst, t_philo *new);
-t_philo	*ft_philonew(t_data *data, int name);
 long	get_timestamp(t_data *data);
 void	sleep_ms(int tsleep_ms);
+t_philo	*ft_philonew(t_data *data, int name);
 
 //activities.c
 int		philo_take_fork(t_philo *philo);
