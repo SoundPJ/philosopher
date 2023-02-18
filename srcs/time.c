@@ -6,7 +6,7 @@
 /*   By: pjerddee <pjerddee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 02:11:10 by pjerddee          #+#    #+#             */
-/*   Updated: 2023/02/18 02:12:36 by pjerddee         ###   ########.fr       */
+/*   Updated: 2023/02/18 23:35:24 by pjerddee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ long	get_tstamp(t_data *data)
 	gettimeofday(&tb, NULL);
 	tstamp = ((tb.tv_sec - ta.tv_sec) * 1000) \
 		+ ((tb.tv_usec - ta.tv_usec) / 1000);
+	// printf("tstamp = %ld\n", tstamp);
 	return (tstamp);
 }
 

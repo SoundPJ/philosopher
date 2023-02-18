@@ -6,7 +6,7 @@
 /*   By: pjerddee <pjerddee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/19 18:56:35 by pjerddee          #+#    #+#             */
-/*   Updated: 2023/02/18 02:19:04 by pjerddee         ###   ########.fr       */
+/*   Updated: 2023/02/19 01:03:55 by pjerddee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,26 @@ void	*philo_activities(void *philo)
 	t_philo	*tmp;
 
 	tmp = (t_philo *)philo;
-	while (tmp->data->stop != 1)
+	if (tmp->name % 2 == 0)
+		usleep(100);
+	while (tmp->data->stop == 0)
 	{
-		if (philo_take_fork(tmp) == 1)
+		// printf("#%d, new loop\t status: %d\n", tmp->name, tmp->data->stop);
+		if (tmp->data->stop == 0)
+			philo_take_fork(tmp);
+		else
+			return (NULL);
+		if (tmp->data->stop == 0)
 			philo_eat(tmp);
-		philo_sleep(tmp);
-		philo_think(tmp);
+		else
+			return (NULL);
+		if (tmp->data->stop == 0)	
+			philo_sleep(tmp);
+		else
+			return (NULL);
+		// printf("#%d, new loop\t status: %d\n", tmp->name, tmp->data->stop);
 	}
+	// printf("Hello There\n");
 	return (NULL);
 }
 
@@ -37,6 +50,8 @@ int	get_argv(int ac, char **av, t_data *data)
 	data->teat = ft_atoi(av[3]);
 	data->tsleep = ft_atoi(av[4]);
 	data->stop = 0;
+	data->ndead = 0;
+	data->nfull = 0;
 	pthread_mutex_init(&(data->printq), NULL);
 	if (ac == 6)
 	{
@@ -62,6 +77,7 @@ void	start_thread(t_data *data)
 	gettimeofday(&(data->tstart), NULL);
 	while (i--)
 	{
+		ptr->tseat = get_tstamp(data);
 		pthread_create(&(ptr->thrd), NULL, &philo_activities, ptr);
 		ptr = ptr->next;
 	}
@@ -84,7 +100,8 @@ void	philo_create(t_data *data)
 	ptr = *(data->philo_lst);
 	while (ptr->next != NULL)
 		ptr = ptr->next;
-	ptr->next = *(data->philo_lst);
+	if (ptr != *(data->philo_lst))
+		ptr->next = *(data->philo_lst);
 }
 
 void	philo_join(t_data *data)
@@ -108,9 +125,9 @@ int	main(int ac, char **av)
 
 	res = get_argv(ac, av, &data);
 	if (res == -1)
-		ft_err("Invalid input\n");
+		ft_err("Invalid input\n", &data);
 	else if (res == -2)
-		ft_err("All input should be positive integer\n");
+		ft_err("All input should be positive integer\n", &data);
 	else
 	{
 		philo_create(&data);
