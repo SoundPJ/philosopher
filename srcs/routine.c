@@ -6,7 +6,7 @@
 /*   By: pjerddee <pjerddee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/19 15:13:19 by pjerddee          #+#    #+#             */
-/*   Updated: 2023/02/19 15:52:32 by pjerddee         ###   ########.fr       */
+/*   Updated: 2023/02/19 16:01:10 by pjerddee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ void	takeforka(t_philo *philo)
 
 void	takeforkb(t_philo *philo)
 {
-	// if (philo->next && !philo->bf && !philo->data->stop && !philo->next->af)
 	if (philo->next && !philo->bf && !philo->data->stop)
 	{
 		pthread_mutex_lock(&(philo->next->fork));
