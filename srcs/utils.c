@@ -6,7 +6,7 @@
 /*   By: pjerddee <pjerddee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/24 12:37:58 by pjerddee          #+#    #+#             */
-/*   Updated: 2023/02/19 15:19:45 by pjerddee         ###   ########.fr       */
+/*   Updated: 2023/02/19 15:27:41 by pjerddee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,8 @@ t_philo	*ft_philonew(t_data *data, int id)
 	node->nate = 0;
 	node->data = data;
 	node->next = NULL;
-	node->afork = 0;
-	node->bfork = 0;
+	node->af = 0;
+	node->bf = 0;
 	node->ate = 0;
 	node->isfull = 0;
 	pthread_mutex_init(&(node->fork), NULL);

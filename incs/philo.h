@@ -6,7 +6,7 @@
 /*   By: pjerddee <pjerddee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/19 18:57:12 by pjerddee          #+#    #+#             */
-/*   Updated: 2023/02/19 15:19:51 by pjerddee         ###   ########.fr       */
+/*   Updated: 2023/02/19 15:43:40 by pjerddee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ typedef struct s_philo
 {
 	int				id;
 	int				nate;
-	int				afork;
-	int				bfork;
+	int				af;
+	int				bf;
 	int				ate;
 	int				isfull;
 	long			tseat;
@@ -72,8 +72,8 @@ void	philo_sleep(t_philo *philo);
 void	philo_think(t_philo *philo);
 
 //time.c
-long	get_tstamp(t_data *data);
-void	sleep_ms(int tsleep_ms);
+long	getts(t_data *data);
+int		istimesout(t_philo *philo);
 
 //routine.c
 void	*philo_activities(void *philo);

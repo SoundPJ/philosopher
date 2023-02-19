@@ -6,7 +6,7 @@
 /*   By: pjerddee <pjerddee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 02:09:57 by pjerddee          #+#    #+#             */
-/*   Updated: 2023/02/19 15:23:32 by pjerddee         ###   ########.fr       */
+/*   Updated: 2023/02/19 15:49:28 by pjerddee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,31 +14,26 @@
 
 void	philo_take_fork(t_philo *philo)
 {
-	if (get_tstamp(philo->data) - philo->tseat < philo->data->tdie && philo->data->stop == 0)
+	if (istimesout(philo) && philo->data->stop == 0)
 	{
 		takeforka(philo);
 		takeforkb(philo);
 	}
 	else
-	{
-		philo_put_fork(philo);
-		if (philo->data->stop != FULL)
-			philo->data->stop = DEAD;
 		philo_stop(philo);
-	}
 }
 
 void	philo_put_fork(t_philo *philo)
 {
-	if (philo->afork == 1)
+	if (philo->af == 1)
 	{
 		pthread_mutex_unlock(&(philo->fork));
-		philo->afork = 0;
+		philo->af = 0;
 	}
-	if (philo->bfork == 1)
+	if (philo->bf == 1)
 	{
 		pthread_mutex_unlock(&(philo->next->fork));
-		philo->bfork = 0;
+		philo->bf = 0;
 	}
 }
 
@@ -46,18 +41,18 @@ void	philo_eat(t_philo *philo)
 {
 	long	diff;
 
-	if (philo->afork == 1 && philo->bfork == 1)
+	if (philo->af == 1 && philo->bf == 1)
 	{
-		if (get_tstamp(philo->data) - philo->tseat < philo->data->tdie && philo->data->stop == 0)
+		if (istimesout(philo) && philo->data->stop == 0)
 		{
-			philo->tseat = get_tstamp(philo->data);
+			philo->tseat = getts(philo->data);
 			pthread_mutex_lock(&(philo->data->printq));
 			if (philo->data->stop == 0)
-				printf("%ld #%d is eating.\n", get_tstamp(philo->data), philo->id);
+				printf("%ld #%d is eating.\n", getts(philo->data), philo->id);
 			pthread_mutex_unlock(&(philo->data->printq));
-			diff = get_tstamp(philo->data) - philo->tseat;
+			diff = getts(philo->data) - philo->tseat;
 			while (diff < philo->data->teat)
-				diff = get_tstamp(philo->data) - philo->tseat;
+				diff = getts(philo->data) - philo->tseat;
 			philo_put_fork(philo);
 			philo->ate = 1;
 			philo->nate++;
@@ -67,12 +62,7 @@ void	philo_eat(t_philo *philo)
 				philo->data->stop = FULL;
 		}
 		else
-		{
-			philo_put_fork(philo);
-			if (philo->data->stop != FULL)
-				philo->data->stop = DEAD;
 			philo_stop(philo);
-		}
 	}
 }
 
@@ -82,16 +72,11 @@ void	philo_think(t_philo *philo)
 	{
 		pthread_mutex_lock(&(philo->data->printq));
 		if (philo->data->stop == 0)
-			printf("%ld #%d is thinking.\n", get_tstamp(philo->data), philo->id);
+			printf("%ld #%d is thinking.\n", getts(philo->data), philo->id);
 		pthread_mutex_unlock(&(philo->data->printq));
 	}
 	else
-	{
-		philo_put_fork(philo);
-		if (philo->data->stop != FULL)
-			philo->data->stop = DEAD;
 		philo_stop(philo);
-	}
 }
 
 void	philo_sleep(t_philo *philo)
@@ -100,25 +85,20 @@ void	philo_sleep(t_philo *philo)
 
 	if (philo->ate == 1)
 	{
-		if (get_tstamp(philo->data) - philo->tseat < philo->data->tdie + 1 && philo->data->stop == 0)
+		if (istimesout(philo) && philo->data->stop == 0)
 		{
-			philo->tssleep = get_tstamp(philo->data);
+			philo->tssleep = getts(philo->data);
 			pthread_mutex_lock(&(philo->data->printq));
 			if (philo->data->stop == 0)
-				printf("%ld #%d is sleeping.\n", get_tstamp(philo->data), philo->id);
+				printf("%ld #%d is sleeping.\n", getts(philo->data), philo->id);
 			pthread_mutex_unlock(&(philo->data->printq));
-			diff = get_tstamp(philo->data) - philo->tssleep;
+			diff = getts(philo->data) - philo->tssleep;
 			while (diff < philo->data->tsleep)
-				diff = get_tstamp(philo->data) - philo->tssleep;
+				diff = getts(philo->data) - philo->tssleep;
 			philo_think(philo);
 		}
 		else
-		{
-			philo_put_fork(philo);
-			if (philo->data->stop != FULL)
-				philo->data->stop = DEAD;
 			philo_stop(philo);
-		}
 		philo->ate = 0;
 	}
 }
