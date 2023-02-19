@@ -6,40 +6,12 @@
 /*   By: pjerddee <pjerddee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/19 18:56:35 by pjerddee          #+#    #+#             */
-/*   Updated: 2023/02/19 01:03:55 by pjerddee         ###   ########.fr       */
+/*   Updated: 2023/02/19 15:17:30 by pjerddee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 //n_of_philosophers t_to_die t_to_eat t_to_sleep [ntimes_must_eat]
-
-void	*philo_activities(void *philo)
-{
-	t_philo	*tmp;
-
-	tmp = (t_philo *)philo;
-	if (tmp->name % 2 == 0)
-		usleep(100);
-	while (tmp->data->stop == 0)
-	{
-		// printf("#%d, new loop\t status: %d\n", tmp->name, tmp->data->stop);
-		if (tmp->data->stop == 0)
-			philo_take_fork(tmp);
-		else
-			return (NULL);
-		if (tmp->data->stop == 0)
-			philo_eat(tmp);
-		else
-			return (NULL);
-		if (tmp->data->stop == 0)	
-			philo_sleep(tmp);
-		else
-			return (NULL);
-		// printf("#%d, new loop\t status: %d\n", tmp->name, tmp->data->stop);
-	}
-	// printf("Hello There\n");
-	return (NULL);
-}
 
 int	get_argv(int ac, char **av, t_data *data)
 {
@@ -51,7 +23,7 @@ int	get_argv(int ac, char **av, t_data *data)
 	data->tsleep = ft_atoi(av[4]);
 	data->stop = 0;
 	data->ndead = 0;
-	data->nfull = 0;
+	data->philo_lst = NULL;
 	pthread_mutex_init(&(data->printq), NULL);
 	if (ac == 6)
 	{
@@ -63,7 +35,6 @@ int	get_argv(int ac, char **av, t_data *data)
 		data->neat = -1;
 	if (data->nphi < 0 || data->tdie < 0 || data->teat < 0 || data->tsleep < 0)
 		return (-2);
-	data->philo_lst = malloc(data->nphi * sizeof(t_philo));
 	return (0);
 }
 
@@ -75,9 +46,10 @@ void	start_thread(t_data *data)
 	ptr = *(data->philo_lst);
 	i = data->nphi;
 	gettimeofday(&(data->tstart), NULL);
+	data->tstart.tv_sec += 1;
 	while (i--)
 	{
-		ptr->tseat = get_tstamp(data);
+		ptr->tseat = 0;
 		pthread_create(&(ptr->thrd), NULL, &philo_activities, ptr);
 		ptr = ptr->next;
 	}
@@ -89,6 +61,7 @@ void	philo_create(t_data *data)
 	t_philo	*ptr;
 	t_philo	*new;
 
+	data->philo_lst = malloc(data->nphi * sizeof(t_philo));
 	i = 0;
 	while (i < data->nphi)
 	{
@@ -96,12 +69,12 @@ void	philo_create(t_data *data)
 		ft_lstadd_back(data->philo_lst, new);
 		i++;
 	}
-	start_thread(data);
 	ptr = *(data->philo_lst);
 	while (ptr->next != NULL)
 		ptr = ptr->next;
 	if (ptr != *(data->philo_lst))
 		ptr->next = *(data->philo_lst);
+	start_thread(data);
 }
 
 void	philo_join(t_data *data)
@@ -125,13 +98,14 @@ int	main(int ac, char **av)
 
 	res = get_argv(ac, av, &data);
 	if (res == -1)
-		ft_err("Invalid input\n", &data);
+		printf("Invalid input\n");
 	else if (res == -2)
-		ft_err("All input should be positive integer\n", &data);
+		printf("All input should be positive integer\n");
 	else
 	{
 		philo_create(&data);
 		philo_join(&data);
 	}
+	ft_clean(&data);
 	return (0);
 }
