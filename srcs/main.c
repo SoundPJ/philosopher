@@ -6,7 +6,7 @@
 /*   By: pjerddee <pjerddee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/19 18:56:35 by pjerddee          #+#    #+#             */
-/*   Updated: 2023/02/19 15:17:30 by pjerddee         ###   ########.fr       */
+/*   Updated: 2023/02/19 15:56:16 by pjerddee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 int	get_argv(int ac, char **av, t_data *data)
 {
+	data->philo_lst = NULL;
 	if (ac < 5 || ac > 6)
 		return (-1);
 	data->nphi = ft_atoi(av[1]);
@@ -23,7 +24,6 @@ int	get_argv(int ac, char **av, t_data *data)
 	data->tsleep = ft_atoi(av[4]);
 	data->stop = 0;
 	data->ndead = 0;
-	data->philo_lst = NULL;
 	pthread_mutex_init(&(data->printq), NULL);
 	if (ac == 6)
 	{
